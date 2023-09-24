@@ -11,7 +11,12 @@ fn main() {
 
     for stream in listener.incoming(){
         let stream = stream.unwrap();
-        handle_connection(stream)
+
+        // Spawn a new Thread para cada conexion (No es eficiente)
+        thread::spawn(|| {
+            handle_connection(stream)
+        });
+        
     }
 
 }
