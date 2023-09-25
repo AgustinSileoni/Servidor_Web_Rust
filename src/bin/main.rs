@@ -5,15 +5,21 @@ use std::fs;
 use std::time::Duration;
 use std::thread;
 
+use server::ThreadPool;
+
+
 fn main() {
+    
     let listener =
         TcpListener::bind("127.0.0.1:7878").unwrap();
 
-    for stream in listener.incoming(){
+    let pool = ThreadPool::new(2);
+
+    for stream in listener.incoming() {
         let stream = stream.unwrap();
 
-        // Spawn a new Thread para cada conexion (No es eficiente)
-        thread::spawn(|| {
+        //Los hilos se crean en el ThreadPool y aca solo se arrancan
+        pool.execute(|| {
             handle_connection(stream)
         });
         
